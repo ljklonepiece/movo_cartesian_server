@@ -1,0 +1,12 @@
+std_msgs/String arm
+float32 dx
+float32 dy
+float32 dz
+
+---
+
+bool executed
+geometry_msgs/PoseStamped pose_init
+geometry_msgs/PoseStamped pose_final
+
+

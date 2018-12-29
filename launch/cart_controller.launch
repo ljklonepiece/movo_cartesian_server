@@ -1,0 +1,8 @@
+<launch>
+
+<node pkg="cartesian_server" name="tool_pose" type="tool_pose_publisher.py" output="screen"/>
+
+<node pkg="cartesian_server" name="cartesian_controller" type="cart_server.py" output="screen"/>
+
+
+</launch>

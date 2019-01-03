@@ -16,7 +16,7 @@ class CartesianServer(object):
 
         self.P_gain = 10
         self.D_gain = 0
-        self.max_vel = 0.06
+        self.max_vel = 0.1
         self.pose = PoseStamped()
         #self.reset = False
         self.received = False
@@ -35,7 +35,8 @@ class CartesianServer(object):
 
 
     def service_callback(self, req):
-        self.vel_pub = rospy.Publisher('/movo/%s_arm/cartesian_vel_cmd'%req.arm, JacoCartesianVelocityCmd, queue_size=10)
+        self.arm = req.arm.data
+        self.vel_pub = rospy.Publisher('/movo/%s_arm/cartesian_vel_cmd'%self.arm, JacoCartesianVelocityCmd, queue_size=10)
         self.received = False
         dx = req.dx
         dy = req.dy
@@ -52,6 +53,7 @@ class CartesianServer(object):
         elif abs(dz) > 0.01:
             result = self.move_by_z(dz=dz)
 
+
         self.pose = self.pose_client(String(self.arm)).tool_pose
         pose_final = self.pose
 
@@ -61,7 +63,7 @@ class CartesianServer(object):
     def move_by_xy(self, dx=0, dy=0):
         ''' move the gripper link in xy plan in a straight line'''
         vel_msg = JacoCartesianVelocityCmd()
-        #vel_msg.header.frame_id = 'base_link'
+        vel_msg.header.frame_id = 'base_link'
         self.pose = self.pose_client(String(self.arm)).tool_pose
         goal_x = self.pose.pose.position.x + dx
         goal_y = self.pose.pose.position.y + dy
@@ -104,6 +106,7 @@ class CartesianServer(object):
                 break
             vel_msg.z = vel_x
             vel_msg.x = - vel_y
+            #print vel_msg
             self.vel_pub.publish(vel_msg)
             self.rate.sleep()
 
@@ -116,7 +119,7 @@ class CartesianServer(object):
     def move_by_z(self, dz=0):
         ''' move the gripper link in z plan in a straight line'''
         vel_msg = JacoCartesianVelocityCmd()
-        #vel_msg.header.frame_id = 'base_link'
+        vel_msg.header.frame_id = 'base_link'
         self.pose = self.pose_client(String(self.arm)).tool_pose
         goal_z = self.pose.pose.position.z + dz
         dz_prev = dz

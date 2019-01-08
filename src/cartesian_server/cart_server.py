@@ -16,7 +16,7 @@ class CartesianServer(object):
 
         self.P_gain = 10
         self.D_gain = 0
-        self.max_vel = 0.1
+        self.max_vel = 0.08
         self.pose = PoseStamped()
         #self.reset = False
         self.received = False
